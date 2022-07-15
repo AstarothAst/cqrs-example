@@ -8,11 +8,10 @@ import static java.lang.String.format;
 
 @Service
 @AllArgsConstructor
-public class OtherServiceImpl implements OtherService {
+public class OtherServiceImpl {
 
     private final ApplicationContext context;
 
-    @Override
     public String getSomeString() {
         int count = context.getBeanDefinitionCount();
         return format("Bean definition count is %s",count );

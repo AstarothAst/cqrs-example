@@ -1,9 +1,9 @@
 package com.example.cqrs.controller;
 
 import com.example.cqrs.dto.WorkDto;
+import com.example.cqrs.dto.WorkResultDto;
 import com.example.cqrs.services.ProcessService;
 import com.example.cqrs.services.RequestStatus;
-import com.example.cqrs.dto.WorkResultDto;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
