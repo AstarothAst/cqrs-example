@@ -1,6 +1,7 @@
 package com.example.cqrs.services;
 
 import com.example.cqrs.dto.WorkResultDto;
+import com.example.cqrs.other.OtherService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -16,10 +17,12 @@ public class Worker implements Runnable {
 
     private final Map<UUID, Work> requestIdToWorkMap;
     private Work work;
+    private OtherService otherService;
 
-    public Worker(Map<UUID, Work> requestIdToWorkMap, Work work) {
+    public Worker(Map<UUID, Work> requestIdToWorkMap, Work work, OtherService otherService) {
         this.requestIdToWorkMap = requestIdToWorkMap;
         this.work = work;
+        this.otherService = otherService;
     }
 
     @Override
@@ -35,6 +38,8 @@ public class Worker implements Runnable {
         try {
             long threadId = Thread.currentThread().getId();
             Long delay = work.getDelay();
+
+            log.info(otherService.getSomeString());
 
             log.info("Начата работа {} с задержкой {}, тред {}", work.getId(), work.getDelay(), threadId);
             Thread.sleep(delay);

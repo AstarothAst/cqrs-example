@@ -2,6 +2,7 @@ package com.example.cqrs.services;
 
 import com.example.cqrs.dto.WorkDto;
 import com.example.cqrs.dto.WorkResultDto;
+import com.example.cqrs.other.OtherService;
 import com.example.cqrs.utils.Parameters;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,12 +27,16 @@ public class ProcessServiceImpl implements ProcessService {
     protected static final int NUM_OF_WORKERS = getRuntime().availableProcessors() + 1;
 
     private final Parameters parameters;
+    private final OtherService otherService;
 
     private final Map<UUID, Work> requestIdToWorkMap;
     private final ExecutorService executor;
 
-    public ProcessServiceImpl(Parameters parameters) {
+    public ProcessServiceImpl(Parameters parameters,
+                              OtherService otherService) {
         this.parameters = parameters;
+        this.otherService = otherService;
+
         this.requestIdToWorkMap = new ConcurrentHashMap<>();
         this.executor = Executors.newFixedThreadPool(NUM_OF_WORKERS);
     }
@@ -84,7 +89,7 @@ public class ProcessServiceImpl implements ProcessService {
                 .ttl(parameters.getProcessingTtlSec())
                 .build();
         requestIdToWorkMap.put(requestId, work);
-        executor.submit(new Worker(requestIdToWorkMap, work));
+        executor.submit(new Worker(requestIdToWorkMap, work, otherService));
         return requestId;
     }
 }
