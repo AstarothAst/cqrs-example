@@ -66,6 +66,8 @@ public class Worker implements Runnable {
             long threadId = Thread.currentThread().getId();
             Long delay = work.getDelay();
 
+            log.info("[{}] 0. локальные данные потока с задержкой {} : {}", threadId, delay, ProcessServiceImpl.threadContext.get().getUuid());
+
             log.info("[{}] 1. начата работа {} с задержкой {}", threadId, work.getId(), work.getDelay());
 
             log.info("[{}] 2. {}", threadId, otherService.getSomeString());
@@ -75,6 +77,8 @@ public class Worker implements Runnable {
             TimeUnit.SECONDS.sleep(delay);
 
             log.info("[{}] 4. закончена работа {}: {}", threadId, work.getId(), requestScopeBean.getStr());
+
+            log.info("[{}] 5. локальные данные потока с задержкой {}: {}", threadId, delay, ProcessServiceImpl.threadContext.get().getUuid());
 
             createSuccessWorkResult(work.getId());
         } catch (Exception e) {

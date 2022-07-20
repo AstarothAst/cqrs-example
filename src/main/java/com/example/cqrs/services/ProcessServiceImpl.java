@@ -26,7 +26,8 @@ import static java.util.Optional.ofNullable;
 @Slf4j
 public class ProcessServiceImpl implements ProcessService {
 
-    protected static final int NUM_OF_WORKERS = getRuntime().availableProcessors() + 1;
+    public static final int NUM_OF_WORKERS = getRuntime().availableProcessors() + 1;
+    public static final InheritableThreadLocal<LocalData> threadContext = new InheritableThreadLocal<>();
 
     private final Parameters parameters;
     private final OtherServiceImpl otherService;
@@ -34,6 +35,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     private final Map<UUID, Work> requestIdToWorkMap;
     private final ExecutorService executor;
+
 
     public ProcessServiceImpl(Parameters parameters,
                               OtherServiceImpl otherService,
@@ -88,6 +90,10 @@ public class ProcessServiceImpl implements ProcessService {
 
     private UUID addWorkToExecutorQueue(WorkDto dto) {
         requestScopeBean.setStr(dto.getDelay());
+
+        LocalData localData = new LocalData();
+        threadContext.set(localData);
+        log.info("[{}] локальные данные для потока = {}", Thread.currentThread().getId(), localData.getUuid());
 
         UUID requestId = UUID.randomUUID();
         Work work = Work.builder()
